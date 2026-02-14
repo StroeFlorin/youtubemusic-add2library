@@ -7,5 +7,12 @@
     "default_title": "YouTube Music - Add2Library",
     "default_popup": "popup.html"
   },
-  "permissions": ["tabs"]
+  "permissions": ["tabs", "storage"],
+  "content_scripts": [
+    {
+      "matches": ["https://music.youtube.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
 }

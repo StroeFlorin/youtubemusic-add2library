@@ -3,20 +3,47 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Simple Extension</title>
+    <title>Add2Library</title>
     <style>
-      body { font-family: system-ui, -apple-system, Arial, sans-serif; margin: 12px; width: 260px; }
-      h1 { font-size: 16px; margin: 0 0 8px; }
-      #title { font-size: 13px; color: #333; line-height: 1.35; }
-      button { margin-top: 10px; padding: 8px 10px; cursor: pointer; }
-      .muted { color: #666; font-size: 12px; margin-top: 8px; }
+      body {
+        font-family: system-ui, -apple-system, Arial, sans-serif;
+        margin: 12px;
+        width: 280px;
+      }
+
+      h1 {
+        font-size: 16px;
+        margin: 0 0 10px;
+      }
+
+      .toggle-row {
+        align-items: center;
+        cursor: pointer;
+        display: flex;
+        font-size: 14px;
+        gap: 10px;
+        justify-content: space-between;
+      }
+
+      .toggle-row input {
+        cursor: pointer;
+      }
+
+      .muted {
+        color: #666;
+        font-size: 12px;
+        line-height: 1.4;
+        margin: 10px 0 0;
+      }
     </style>
   </head>
   <body>
-    <h1>👋 Hello, human</h1>
-    <div id="title">Loading tab title…</div>
-    <button id="copy">Copy title</button>
-    <div class="muted">Tip: open any page and click the extension icon.</div>
+    <h1>YouTube Music - Add2Library</h1>
+    <label class="toggle-row" for="library-toggle">
+      <span>Enable "Add to library" button</span>
+      <input id="library-toggle" type="checkbox" />
+    </label>
+    <p class="muted" id="status">Loading setting...</p>
 
     <script src="popup.js"></script>
   </body>
