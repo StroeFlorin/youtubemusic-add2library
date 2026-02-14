@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Music - Add2Library",
+  "version": "1.0.0",
+  "description": "A Chrome extension to add songs to your YouTube Music library.",
+  "action": {
+    "default_title": "YouTube Music - Add2Library",
+    "default_popup": "popup.html"
+  },
+  "permissions": ["tabs"]
+}
