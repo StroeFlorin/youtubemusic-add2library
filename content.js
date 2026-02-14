@@ -1,11 +1,13 @@
 const BUTTON_ID = "add2library-toggle-button";
 const STYLE_ID = "add2library-toggle-style";
 const TOGGLE_STORAGE_KEY = "addToLibraryEnabled";
+const PLAYER_BAR_MENU_MATCH_WINDOW_MS = 5000;
 
 let isActionRunning = false;
 let isFeatureEnabled = true;
 let lastTrackKey = "";
 let syncToken = 0;
+let lastPlayerBarMenuClickAt = 0;
 
 function normalize(text) {
   return (text || "").replace(/\s+/g, " ").trim().toLowerCase();
@@ -271,6 +273,56 @@ function clickMenuItem(item) {
   clickable.click();
 }
 
+function getElementFromEventTarget(target) {
+  if (target instanceof Element) return target;
+  if (target instanceof Node) return target.parentElement;
+  return null;
+}
+
+function isClickInsideElement(targetElement, rootElement) {
+  return Boolean(
+    targetElement &&
+      rootElement &&
+      (targetElement === rootElement || rootElement.contains(targetElement))
+  );
+}
+
+function registerNativeMenuInteractionListener() {
+  document.addEventListener(
+    "click",
+    (event) => {
+      const targetElement = getElementFromEventTarget(event.target);
+      if (!targetElement) return;
+
+      const playerBarMenuButton = getMenuButton(getPlayerBar());
+      if (isClickInsideElement(targetElement, playerBarMenuButton)) {
+        lastPlayerBarMenuClickAt = Date.now();
+        return;
+      }
+
+      const clickedMenuItem = targetElement.closest(
+        "ytmusic-toggle-menu-service-item-renderer, ytmusic-menu-service-item-renderer"
+      );
+      if (!clickedMenuItem) return;
+
+      const clickedState = getLibraryStateFromText(clickedMenuItem.textContent);
+      if (!clickedState) return;
+
+      const clickedSoonAfterPlayerMenuOpen =
+        Date.now() - lastPlayerBarMenuClickAt < PLAYER_BAR_MENU_MATCH_WINDOW_MS;
+      if (!clickedSoonAfterPlayerMenuOpen) return;
+
+      if (!isFeatureEnabled || isActionRunning) return;
+      if (!document.getElementById(BUTTON_ID)) return;
+
+      // The menu text represents the current action; clicking it flips to the opposite state.
+      const nextState = clickedState === "saved" ? "default" : "saved";
+      updateButtonState(nextState);
+    },
+    true
+  );
+}
+
 async function triggerNativeLibraryToggle() {
   const playerBar = getPlayerBar();
   const menuButton = getMenuButton(playerBar);
@@ -466,6 +518,7 @@ async function init() {
   const initialToggle = await getInitialFeatureToggle();
   applyFeatureToggle(initialToggle);
   registerToggleListeners();
+  registerNativeMenuInteractionListener();
 
   const observer = new MutationObserver(() => {
     scheduleRefresh();
