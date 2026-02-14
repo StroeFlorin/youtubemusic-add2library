@@ -29,4 +29,4 @@ A small Chrome extension that adds an `Add to library` toggle button to the YouT
 
 ## License
 
-MIT. See `LICENSE`.
+MIT. See [LICENSE](https://github.com/StroeFlorin/youtubemusic-add2library/blob/main/LICENSE).
